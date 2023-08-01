@@ -5,13 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 
-class TabRecyclerViewAdapter(private val newsList: ArrayList<News>) :
+class TabRecyclerViewAdapter(private val newsList: MutableList<News>) :
     RecyclerView.Adapter<TabRecyclerViewAdapter.MyViewHolder>() {
 
-    lateinit var context: Context
+    private lateinit var context: Context
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val itemView =
@@ -36,8 +35,6 @@ class TabRecyclerViewAdapter(private val newsList: ArrayList<News>) :
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val header: TextView = itemView.findViewById(R.id.newsHeading)
         val body: TextView = itemView.findViewById(R.id.newsBody)
-        val testLayout: CardView = itemView.findViewById(R.id.test)
-
     }
 
 }
