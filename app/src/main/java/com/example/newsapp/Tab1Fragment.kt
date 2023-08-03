@@ -23,20 +23,19 @@ class Tab1Fragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        headingList= mutableListOf("One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten")
-        bodyList= mutableListOf("ASDFDAfduojnwbfibsbdfjnsdjlnf","ahbfiubdgifbdafiabkf","badkbfbudbfbdabfdfuobdf","fkadbfubdbfbdf","ndbufbdbdsvjbvd","dajbfnudbfdfb","ndndfnudhf","kabhdbhkaksdbabsd","tdfttfthfhff","gtfctftgvjfjgdddhtdhfgjfgjfvhjghgfyudrsesesfggnfhjfuyfyfhvhhfgyfgyljvjhffyjfjvfyjfjfjktkfkhffgvhvhmvhjvhjvjhggygggtfctftgvjfjgdddhtdhfgjfgjfvhjghgfyudrsesesfggnfhjfuyfyfhvhhfgyfgyljvjhffyjfjvfyjfjfjktkfkhffgvhvhmvhjvhjvjhggygggtfctftgvjfjgdddhtdhfgjfgjfvhjghgfyudrsesesfggnfhjfuyfyfhvhhfgyfgyljvjhffyjfjvfyjfjfjktkfkhffgvhvhmvhjvhjvjhggygggtfctftgvjfjgdddhtdhfgjfgjfvhjghgfyudrsesesfggnfhjfuyfyfhvhhfgyfgyljvjhffyjfjvfyjfjfjktkfkhffgvhvhmvhjvhjvjhggygggtfctftgvjfjgdddhtdhfgjfgjfvhjghgfyudrsesesfggnfhjfuyfyfhvhhfgyfgyljvjhffyjfjvfyjfjfjktkfkhffgvhvhmvhjvhjvjhggygg","ASDFDAfduojnwbfibsbdfjnsdjlnf","ahbfiubdgifbdafiabkf","badkbfbudbfbdabfdfuobdf","fkadbfubdbfbdf","ndbufbdbdsvjbvd","dajbfnudbfdfb","ndndfnudhf","kabhdbhkaksdbabsd","tdfttfthfhff","gtfctftgvjfjgdddhtdhfgjfgjfvhjghgfyudrsesesfggnfhjfuyfyfhvhhfgyfgyljvjhffyjfjvfyjfjfjktkfkhffgvhvhmvhjvhjvjhggygggtfctftgvjfjgdddhtdhfgjfgjfvhjghgfyudrsesesfggnfhjfuyfyfhvhhfgyfgyljvjhffyjfjvfyjfjfjktkfkhffgvhvhmvhjvhjvjhggygggtfctftgvjfjgdddhtdhfgjfgjfvhjghgfyudrsesesfggnfhjfuyfyfhvhhfgyfgyljvjhffyjfjvfyjfjfjktkfkhffgvhvhmvhjvhjvjhggygggtfctftgvjfjgdddhtdhfgjfgjfvhjghgfyudrsesesfggnfhjfuyfyfhvhhfgyfgyljvjhffyjfjvfyjfjfjktkfkhffgvhvhmvhjvhjvjhggygggtfctftgvjfjgdddhtdhfgjfgjfvhjghgfyudrsesesfggnfhjfuyfyfhvhhfgyfgyljvjhffyjfjvfyjfjfjktkfkhffgvhvhmvhjvhjvjhggygg")
         recycler=view.findViewById(R.id.recyclerViewTab1)
         recycler.layoutManager=LinearLayoutManager(context)
-        newsList= mutableListOf()
         getData()
+        recycler.adapter=TabRecyclerViewAdapter(newsList)
     }
     private fun getData(){
+        headingList= mutableListOf("One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten")
+        bodyList= mutableListOf("ASDFDAfduojnwbfibsbdfjnsdjlnf","ahbfiubdgifbdafiabkf","badkbfbudbfbdabfdfuobdf","fkadbfubdbfbdf","ndbufbdbdsvjbvd","dajbfnudbfdfb","ndndfnudhf","kabhdbhkaksdbabsd","tdfttfthfhff","gtfctftgvjfjgdddhtdhfgjfgjfvhjghgfyudrsesesfggnfhjfuyfyfhvhhfgyfgyljvjhffyjfjvfyjfjfjktkfkhffgvhvhmvhjvhjvjhggygggtfctftgvjfjgdddhtdhfgjfgjfvhjghgfyudrsesesfggnfhjfuyfyfhvhhfgyfgyljvjhffyjfjvfyjfjfjktkfkhffgvhvhmvhjvhjvjhggygggtfctftgvjfjgdddhtdhfgjfgjfvhjghgfyudrsesesfggnfhjfuyfyfhvhhfgyfgyljvjhffyjfjvfyjfjfjktkfkhffgvhvhmvhjvhjvjhggygggtfctftgvjfjgdddhtdhfgjfgjfvhjghgfyudrsesesfggnfhjfuyfyfhvhhfgyfgyljvjhffyjfjvfyjfjfjktkfkhffgvhvhmvhjvhjvjhggygggtfctftgvjfjgdddhtdhfgjfgjfvhjghgfyudrsesesfggnfhjfuyfyfhvhhfgyfgyljvjhffyjfjvfyjfjfjktkfkhffgvhvhmvhjvhjvjhggygg","ASDFDAfduojnwbfibsbdfjnsdjlnf","ahbfiubdgifbdafiabkf","badkbfbudbfbdabfdfuobdf","fkadbfubdbfbdf","ndbufbdbdsvjbvd","dajbfnudbfdfb","ndndfnudhf","kabhdbhkaksdbabsd","tdfttfthfhff","gtfctftgvjfjgdddhtdhfgjfgjfvhjghgfyudrsesesfggnfhjfuyfyfhvhhfgyfgyljvjhffyjfjvfyjfjfjktkfkhffgvhvhmvhjvhjvjhggygggtfctftgvjfjgdddhtdhfgjfgjfvhjghgfyudrsesesfggnfhjfuyfyfhvhhfgyfgyljvjhffyjfjvfyjfjfjktkfkhffgvhvhmvhjvhjvjhggygggtfctftgvjfjgdddhtdhfgjfgjfvhjghgfyudrsesesfggnfhjfuyfyfhvhhfgyfgyljvjhffyjfjvfyjfjfjktkfkhffgvhvhmvhjvhjvjhggygggtfctftgvjfjgdddhtdhfgjfgjfvhjghgfyudrsesesfggnfhjfuyfyfhvhhfgyfgyljvjhffyjfjvfyjfjfjktkfkhffgvhvhmvhjvhjvjhggygggtfctftgvjfjgdddhtdhfgjfgjfvhjghgfyudrsesesfggnfhjfuyfyfhvhhfgyfgyljvjhffyjfjvfyjfjfjktkfkhffgvhvhmvhjvhjvjhggygg")
         newsList= mutableListOf()
         for(i in bodyList.indices){
             val news = News(headingList[i],bodyList[i])
             newsList.add(news)
         }
-        recycler.adapter=TabRecyclerViewAdapter(newsList)
     }
 
 

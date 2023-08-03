@@ -23,19 +23,19 @@ class Tab2Fragment : Fragment(){
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        headingList= mutableListOf("11111","22222","33333","44444","55555","66666","77777","88888","99999","101010")
-        bodyList= mutableListOf("ASDFDAfduojnwbfibsbdfjnsdjlnf","ahbfiubdgifbdafiabkf","badkbfbudbfbdabfdfuobdf","fkadbfubdbfbdf","ndbufbdbdsvjbvd","dajbfnudbfdfb","ndndfnudhf","kabhdbhkaksdbabsd","tdfttfthfhff","gtfctftgv")
         recycler=view.findViewById(R.id.recyclerViewTab2)
         recycler.layoutManager= LinearLayoutManager(activity)
         getData()
+        recycler.adapter=TabRecyclerViewAdapter(newsList)
     }
     private fun getData(){
+        headingList= mutableListOf("11111","22222","33333","44444","55555","66666","77777","88888","99999","101010")
+        bodyList= mutableListOf("ASDFDAfduojnwbfibsbdfjnsdjlnf","ahbfiubdgifbdafiabkf","badkbfbudbfbdabfdfuobdf","fkadbfubdbfbdf","ndbufbdbdsvjbvd","dajbfnudbfdfb","ndndfnudhf","kabhdbhkaksdbabsd","tdfttfthfhff","gtfctftgv")
         newsList= mutableListOf()
         for(i in bodyList.indices){
             val news = News(headingList[i],bodyList[i])
             newsList.add(news)
         }
-        recycler.adapter=TabRecyclerViewAdapter(newsList)
     }
 
 

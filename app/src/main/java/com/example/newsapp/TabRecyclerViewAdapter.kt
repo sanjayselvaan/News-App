@@ -5,17 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
+
 import androidx.recyclerview.widget.RecyclerView
 
 class TabRecyclerViewAdapter(private val newsList: MutableList<News>) :
     RecyclerView.Adapter<TabRecyclerViewAdapter.MyViewHolder>() {
-
-    private lateinit var context: Context
-
+    private lateinit var context:Context
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val itemView =
             LayoutInflater.from(parent.context).inflate(R.layout.list_item, parent, false)
-        context = parent.context
+        context=parent.context
         return MyViewHolder(itemView)
     }
 
@@ -29,7 +29,9 @@ class TabRecyclerViewAdapter(private val newsList: MutableList<News>) :
         val currentItem = newsList[position]
         holder.header.text = currentItem.Heading
         holder.body.text = currentItem.Body
-
+        holder.itemView.setOnClickListener {
+            Toast.makeText(context,currentItem.Heading,Toast.LENGTH_SHORT).show()
+        }
     }
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
