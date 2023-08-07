@@ -9,11 +9,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 
-class Tab2Fragment : Fragment(){
+class Tab2Fragment : Fragment(),RecyclerViewItemClick{
     private lateinit var recycler: RecyclerView
-    private lateinit var newsList:MutableList<News>
-    private lateinit var headingList:MutableList<String>
-    private lateinit var bodyList:MutableList<String>
+    private lateinit var newsList: MutableList<News>
+    private lateinit var headingList: MutableList<String>
+    private lateinit var bodyList: MutableList<String>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -21,21 +21,51 @@ class Tab2Fragment : Fragment(){
     ): View? {
         return inflater.inflate(R.layout.fragment_tab2, container, false)
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recycler=view.findViewById(R.id.recyclerViewTab2)
-        recycler.layoutManager= LinearLayoutManager(activity)
+        recycler = view.findViewById(R.id.recyclerViewTab2)
+        recycler.layoutManager = LinearLayoutManager(activity)
         getData()
-        recycler.adapter=TabRecyclerViewAdapter(newsList)
+        recycler.adapter = TabRecyclerViewAdapter(newsList,this)
     }
-    private fun getData(){
-        headingList= mutableListOf("11111","22222","33333","44444","55555","66666","77777","88888","99999","101010")
-        bodyList= mutableListOf("ASDFDAfduojnwbfibsbdfjnsdjlnf","ahbfiubdgifbdafiabkf","badkbfbudbfbdabfdfuobdf","fkadbfubdbfbdf","ndbufbdbdsvjbvd","dajbfnudbfdfb","ndndfnudhf","kabhdbhkaksdbabsd","tdfttfthfhff","gtfctftgv")
-        newsList= mutableListOf()
-        for(i in bodyList.indices){
-            val news = News(headingList[i],bodyList[i])
+
+    private fun getData() {
+        headingList = mutableListOf(
+            "11111",
+            "22222",
+            "33333",
+            "44444",
+            "55555",
+            "66666",
+            "77777",
+            "88888",
+            "99999",
+            "101010"
+        )
+        bodyList = mutableListOf(
+            "ASDFDAfduojnwbfibsbdfjnsdjlnf",
+            "ahbfiubdgifbdafiabkf",
+            "badkbfbudbfbdabfdfuobdf",
+            "fkadbfubdbfbdf",
+            "ndbufbdbdsvjbvd",
+            "dajbfnudbfdfb",
+            "ndndfnudhf",
+            "kabhdbhkaksdbabsd",
+            "tdfttfthfhff",
+            "gtfctftgv"
+        )
+        newsList = mutableListOf()
+        for (i in bodyList.indices) {
+            val news = News(headingList[i], bodyList[i])
             newsList.add(news)
         }
+    }
+    override fun onClickItemListener() {
+        childFragmentManager.beginTransaction().add(R.id.fragmentTwoContainer,CompletedFragment()).addToBackStack(null).commit()
+        recycler.visibility=View.GONE
+        val actionBar=requireActivity().actionBar
+        actionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
 

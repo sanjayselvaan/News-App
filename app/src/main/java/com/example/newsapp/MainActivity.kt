@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
+
         if(binding.ViewPager.currentItem==1){
             binding.ViewPager.currentItem = 0
         }

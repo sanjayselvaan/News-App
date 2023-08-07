@@ -2,4 +2,7 @@
     <string name="app_name">NewsApp</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="draft">DRAFT</string>
+    <string name="completed">COMPLETED</string>
+    <string name="enter_some_text">Enter some text</string>
 </resources>
