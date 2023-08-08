@@ -8,14 +8,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-class Tab1Fragment : Fragment(), RecyclerViewItemClick {
+class Tab1Fragment() : Fragment(), RecyclerViewItemClick {
     private lateinit var recycler: RecyclerView
     private lateinit var newsList: MutableList<News>
     private lateinit var headingList: MutableList<String>
     private lateinit var bodyList: MutableList<String>
+    private lateinit var displayFragment: DisplayFragment
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_tab1, container, false)
@@ -24,11 +24,11 @@ class Tab1Fragment : Fragment(), RecyclerViewItemClick {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recycler = view.findViewById(R.id.recyclerViewTab1)
+        recycler.visibility=View.VISIBLE
         recycler.layoutManager = LinearLayoutManager(context)
         getData()
         recycler.adapter = TabRecyclerViewAdapter(newsList, this)
-
-
+        displayFragment=DisplayFragment(true)
     }
 
     private fun getData() {
@@ -84,13 +84,12 @@ class Tab1Fragment : Fragment(), RecyclerViewItemClick {
     }
 
 
-    override fun onClickItemListener() {
-        childFragmentManager.beginTransaction().replace(R.id.fragmentOneContainer, DraftFragment())
-            .addToBackStack(null).commit()
-        recycler.visibility=View.GONE
-
-
+    override fun onClickItemListener(position:Int) {
+        val bundle=Bundle()
+        bundle.putString("body",newsList[position].Body)
+        displayFragment.arguments=bundle
+        parentFragmentManager.beginTransaction().replace(R.id.mainContainer, displayFragment)
+            .addToBackStack("fragment_1").commit()
     }
-
 
 }

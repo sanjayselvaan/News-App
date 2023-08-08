@@ -1,5 +1,5 @@
 package com.example.newsapp
 
 interface RecyclerViewItemClick {
-    fun onClickItemListener()
+    fun onClickItemListener(position:Int)
 }

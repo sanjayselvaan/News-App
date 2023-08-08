@@ -1,6 +1,6 @@
 package com.example.newsapp
 
-import android.content.Context
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,13 +8,17 @@ import android.widget.TextView
 
 import androidx.recyclerview.widget.RecyclerView
 
-class TabRecyclerViewAdapter(private val newsList: MutableList<News>,private  var itemClick: RecyclerViewItemClick) :
+
+class TabRecyclerViewAdapter(
+    private val newsList: MutableList<News>,
+    private val itemClick: RecyclerViewItemClick
+) :
     RecyclerView.Adapter<TabRecyclerViewAdapter.MyViewHolder>() {
-    private lateinit var context:Context
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val itemView =
             LayoutInflater.from(parent.context).inflate(R.layout.list_item, parent, false)
-        context=parent.context
         return MyViewHolder(itemView)
     }
 
@@ -24,17 +28,16 @@ class TabRecyclerViewAdapter(private val newsList: MutableList<News>,private  va
 
     }
 
+
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currentItem = newsList[position]
         holder.header.text = currentItem.Heading
         holder.body.text = currentItem.Body
         holder.itemView.setOnClickListener {
-            itemClick.onClickItemListener()
+            itemClick.onClickItemListener(position)
         }
     }
-//    fun setCallBack( itemClick: RecyclerViewItemClick){
-//      this.itemClick=itemClick
-//    }
+
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val header: TextView = itemView.findViewById(R.id.newsHeading)

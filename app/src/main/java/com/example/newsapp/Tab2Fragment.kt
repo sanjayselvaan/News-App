@@ -9,11 +9,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 
-class Tab2Fragment : Fragment(),RecyclerViewItemClick{
+class Tab2Fragment : Fragment(),RecyclerViewItemClick {
     private lateinit var recycler: RecyclerView
     private lateinit var newsList: MutableList<News>
     private lateinit var headingList: MutableList<String>
     private lateinit var bodyList: MutableList<String>
+    private lateinit var displayFragment:DisplayFragment
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,7 +28,8 @@ class Tab2Fragment : Fragment(),RecyclerViewItemClick{
         recycler = view.findViewById(R.id.recyclerViewTab2)
         recycler.layoutManager = LinearLayoutManager(activity)
         getData()
-        recycler.adapter = TabRecyclerViewAdapter(newsList,this)
+        recycler.adapter = TabRecyclerViewAdapter(newsList, this)
+        displayFragment= DisplayFragment(false)
     }
 
     private fun getData() {
@@ -61,11 +63,12 @@ class Tab2Fragment : Fragment(),RecyclerViewItemClick{
             newsList.add(news)
         }
     }
-    override fun onClickItemListener() {
-        childFragmentManager.beginTransaction().add(R.id.fragmentTwoContainer,CompletedFragment()).addToBackStack(null).commit()
-        recycler.visibility=View.GONE
-        val actionBar=requireActivity().actionBar
-        actionBar?.setDisplayHomeAsUpEnabled(true)
+
+    override fun onClickItemListener(position:Int) {
+        val bundle=Bundle()
+        bundle.putString("body",newsList[position].Body)
+        displayFragment.arguments=bundle
+        parentFragmentManager.beginTransaction().replace(R.id.mainContainer,displayFragment).addToBackStack("fragment_2").commit()
     }
 
 
