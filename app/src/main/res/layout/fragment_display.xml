@@ -22,7 +22,11 @@
         android:autofillHints="@null"
         android:inputType="text"
         android:hint="@string/enter_some_text"/>
-
-
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/timeTakenTextView"
+        android:visibility="gone"
+        android:layout_gravity="center_horizontal"
+        android:textSize="30sp"/>
 </FrameLayout>

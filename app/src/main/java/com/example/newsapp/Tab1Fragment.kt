@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
@@ -14,6 +15,8 @@ class Tab1Fragment() : Fragment(), RecyclerViewItemClick {
     private lateinit var headingList: MutableList<String>
     private lateinit var bodyList: MutableList<String>
     private lateinit var displayFragment: DisplayFragment
+    private lateinit var sampleViewModel: SampleViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -28,7 +31,8 @@ class Tab1Fragment() : Fragment(), RecyclerViewItemClick {
         recycler.layoutManager = LinearLayoutManager(context)
         getData()
         recycler.adapter = TabRecyclerViewAdapter(newsList, this)
-        displayFragment=DisplayFragment(true)
+        sampleViewModel= ViewModelProvider(this).get(SampleViewModel::class.java)
+
     }
 
     private fun getData() {
@@ -83,10 +87,17 @@ class Tab1Fragment() : Fragment(), RecyclerViewItemClick {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+    }
+
 
     override fun onClickItemListener(position:Int) {
+        println("tab1-$position")
         val bundle=Bundle()
         bundle.putString("body",newsList[position].Body)
+        bundle.putInt("position",position)
+        displayFragment=DisplayFragment(true, sampleViewModel.timeHashMap)
         displayFragment.arguments=bundle
         parentFragmentManager.beginTransaction().replace(R.id.mainContainer, displayFragment)
             .addToBackStack("fragment_1").commit()

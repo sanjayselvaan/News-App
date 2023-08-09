@@ -5,11 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 
 class Tab2Fragment : Fragment(),RecyclerViewItemClick {
+    private lateinit var sampleViewModel: SampleViewModel
     private lateinit var recycler: RecyclerView
     private lateinit var newsList: MutableList<News>
     private lateinit var headingList: MutableList<String>
@@ -29,7 +31,8 @@ class Tab2Fragment : Fragment(),RecyclerViewItemClick {
         recycler.layoutManager = LinearLayoutManager(activity)
         getData()
         recycler.adapter = TabRecyclerViewAdapter(newsList, this)
-        displayFragment= DisplayFragment(false)
+        displayFragment= DisplayFragment(false,sampleViewModel.timeHashMap)
+        sampleViewModel=ViewModelProvider(this).get(SampleViewModel::class.java)
     }
 
     private fun getData() {
@@ -68,6 +71,7 @@ class Tab2Fragment : Fragment(),RecyclerViewItemClick {
         val bundle=Bundle()
         bundle.putString("body",newsList[position].Body)
         displayFragment.arguments=bundle
+
         parentFragmentManager.beginTransaction().replace(R.id.mainContainer,displayFragment).addToBackStack("fragment_2").commit()
     }
 
