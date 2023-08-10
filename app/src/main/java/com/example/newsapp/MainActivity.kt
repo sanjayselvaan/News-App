@@ -16,11 +16,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
 
-        if ((supportFragmentManager.getBackStackEntryAt(supportFragmentManager.backStackEntryCount - 1).name) == "fragment_2") {
+        if ((supportFragmentManager.getBackStackEntryAt(supportFragmentManager.backStackEntryCount - 1).name) == CompleteFragment.fragmentCompleteKey) {
             supportFragmentManager.popBackStack()
 
 
-        } else if ((supportFragmentManager.getBackStackEntryAt(supportFragmentManager.backStackEntryCount - 1).name) == "fragment_1") {
+        } else if ((supportFragmentManager.getBackStackEntryAt(supportFragmentManager.backStackEntryCount - 1).name) == DraftFragment.fragmentDraftKey) {
             supportFragmentManager.popBackStack()
 
         } else {

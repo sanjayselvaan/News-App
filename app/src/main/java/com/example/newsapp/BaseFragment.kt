@@ -16,13 +16,12 @@ class BaseFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_base, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val tabTitle= arrayListOf("Tab-1","Tab-2")
+        val tabTitle= arrayListOf("Draft","Complete")
         val tabLayout:TabLayout=view.findViewById(R.id.tabLayout)
         val viewPager=view.findViewById<ViewPager2>(R.id.ViewPager)
         viewPager.adapter=FragmentAdapter(requireActivity().supportFragmentManager,requireActivity().lifecycle)

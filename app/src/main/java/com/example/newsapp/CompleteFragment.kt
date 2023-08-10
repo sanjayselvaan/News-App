@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 
-class Tab2Fragment : Fragment(), RecyclerViewItemClick {
+class CompleteFragment : Fragment(), RecyclerViewItemClick {
     private lateinit var draftAndCompleteViewModel: DraftAndCompleteViewModel
     private lateinit var recycler: RecyclerView
     private lateinit var displayFragment: DisplayFragment
@@ -21,7 +21,7 @@ class Tab2Fragment : Fragment(), RecyclerViewItemClick {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_tab2, container, false)
+        val view = inflater.inflate(R.layout.fragment_complete, container, false)
         recycler = view.findViewById(R.id.recyclerViewTab2)
         recycler.layoutManager = LinearLayoutManager(requireContext())
         draftAndCompleteViewModel = ViewModelProvider(requireActivity()).get(DraftAndCompleteViewModel::class.java)
@@ -50,9 +50,12 @@ class Tab2Fragment : Fragment(), RecyclerViewItemClick {
         bundle.putBoolean("draftFlag", false)
         displayFragment.arguments = bundle
         parentFragmentManager.beginTransaction()
-            .replace(R.id.mainContainer, displayFragment, "fragment_2")
+            .replace(R.id.mainContainer, displayFragment, fragmentCompleteKey)
             .addToBackStack("fragment_2").commit()
 
+    }
+    companion object{
+        const val fragmentCompleteKey="fragment_2"
     }
 
 

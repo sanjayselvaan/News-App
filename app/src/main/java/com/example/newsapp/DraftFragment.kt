@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-class Tab1Fragment() : Fragment(), RecyclerViewItemClick {
+class DraftFragment() : Fragment(), RecyclerViewItemClick {
     private lateinit var recycler: RecyclerView
     private lateinit var newsList: MutableList<News>
     private lateinit var headingList: MutableList<String>
@@ -22,7 +22,7 @@ class Tab1Fragment() : Fragment(), RecyclerViewItemClick {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_tab1, container, false)
+        val view = inflater.inflate(R.layout.fragment_draft, container, false)
         recycler = view.findViewById(R.id.recyclerViewTab1)
         recycler.layoutManager = LinearLayoutManager(requireContext())
         draftAndCompleteViewModel =
@@ -115,8 +115,11 @@ class Tab1Fragment() : Fragment(), RecyclerViewItemClick {
         displayFragment.arguments = null
         displayFragment.arguments = bundle
         parentFragmentManager.beginTransaction()
-            .replace(R.id.mainContainer, displayFragment, "fragment_1")
-            .addToBackStack("fragment_1").commit()
+            .replace(R.id.mainContainer, displayFragment, fragmentDraftKey)
+            .addToBackStack(fragmentDraftKey).commit()
     }
 
+    companion object{
+        const val fragmentDraftKey="fragment_1"
+    }
 }

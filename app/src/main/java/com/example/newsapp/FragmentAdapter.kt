@@ -13,9 +13,9 @@ class FragmentAdapter(fm: FragmentManager, lifecycle: Lifecycle) :
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> Tab1Fragment()
-            1 -> Tab2Fragment()
-            else -> Tab1Fragment()
+            0 -> DraftFragment()
+            1 -> CompleteFragment()
+            else -> DraftFragment()
         }
     }
 }
