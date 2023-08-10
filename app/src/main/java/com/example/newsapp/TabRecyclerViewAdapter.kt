@@ -34,7 +34,6 @@ class TabRecyclerViewAdapter(
         holder.header.text = currentItem.Heading
         holder.body.text = currentItem.Body
         holder.itemView.setOnClickListener {
-            println("setonclick-$position")
             itemClick.onClickItemListener(position)
         }
     }

@@ -15,23 +15,43 @@ class Tab1Fragment() : Fragment(), RecyclerViewItemClick {
     private lateinit var headingList: MutableList<String>
     private lateinit var bodyList: MutableList<String>
     private lateinit var displayFragment: DisplayFragment
-    private lateinit var sampleViewModel: SampleViewModel
+    private lateinit var draftAndCompleteViewModel: DraftAndCompleteViewModel
+    private lateinit var recyclerViewAdapter: TabRecyclerViewAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_tab1, container, false)
+        val view = inflater.inflate(R.layout.fragment_tab1, container, false)
+        recycler = view.findViewById(R.id.recyclerViewTab1)
+        recycler.layoutManager = LinearLayoutManager(requireContext())
+        draftAndCompleteViewModel =
+            ViewModelProvider(requireActivity()).get(DraftAndCompleteViewModel::class.java)
+        recyclerViewAdapter = TabRecyclerViewAdapter(draftAndCompleteViewModel.draftList, this)
+        recycler.adapter = recyclerViewAdapter
+        displayFragment = DisplayFragment()
+
+
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recycler = view.findViewById(R.id.recyclerViewTab1)
-        recycler.visibility=View.VISIBLE
-        recycler.layoutManager = LinearLayoutManager(context)
-        getData()
-        recycler.adapter = TabRecyclerViewAdapter(newsList, this)
-        sampleViewModel= ViewModelProvider(this).get(SampleViewModel::class.java)
+        if (savedInstanceState == null) {
+            getData()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (draftAndCompleteViewModel.ToNotifyTab1) {
+            draftAndCompleteViewModel.positionForTab1?.let {
+                recyclerViewAdapter.notifyItemChanged(
+                    it
+                )
+            }
+            draftAndCompleteViewModel.ToNotifyTab1 = false
+        }
 
     }
 
@@ -47,16 +67,16 @@ class Tab1Fragment() : Fragment(), RecyclerViewItemClick {
             "Eight",
             "Nine",
             "Ten",
-            "One",
-            "Two",
-            "Three",
-            "Four",
-            "Five",
-            "Six",
-            "Seven",
-            "Eight",
-            "Nine",
-            "Ten"
+            "Eleven",
+            "Twelve",
+            "Thirteen",
+            "Fourteen",
+            "Fiveteen",
+            "Sixteen",
+            "Seventeen",
+            "Eighteen",
+            "Nineteen",
+            "Twenty"
         )
         bodyList = mutableListOf(
             "ASDFDAfduojnwbfibsbdfjnsdjlnf",
@@ -82,24 +102,20 @@ class Tab1Fragment() : Fragment(), RecyclerViewItemClick {
         )
         newsList = mutableListOf()
         for (i in bodyList.indices) {
-            val news = News(headingList[i], bodyList[i])
-            newsList.add(news)
+            val news = News(i, headingList[i], bodyList[i], 0)
+            draftAndCompleteViewModel.draftList.add(i, news)
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
-
-    override fun onClickItemListener(position:Int) {
-        println("tab1-$position")
-        val bundle=Bundle()
-        bundle.putString("body",newsList[position].Body)
-        bundle.putInt("position",position)
-        displayFragment=DisplayFragment(true, sampleViewModel.timeHashMap)
-        displayFragment.arguments=bundle
-        parentFragmentManager.beginTransaction().replace(R.id.mainContainer, displayFragment)
+    override fun onClickItemListener(position: Int) {
+        displayFragment = DisplayFragment()
+        val bundle = Bundle()
+        bundle.putInt("position", position)
+        bundle.putBoolean("draftFlag", true)
+        displayFragment.arguments = null
+        displayFragment.arguments = bundle
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.mainContainer, displayFragment, "fragment_1")
             .addToBackStack("fragment_1").commit()
     }
 
