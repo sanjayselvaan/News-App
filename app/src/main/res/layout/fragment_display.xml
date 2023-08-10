@@ -11,6 +11,8 @@
         android:layout_height="wrap_content"
         android:text="@string/hello_blank_fragment"
         android:textSize="30sp"
+        android:maxLines="15"
+        android:ellipsize="end"
         android:layout_gravity="center"/>
     <EditText
         android:layout_width="match_parent"

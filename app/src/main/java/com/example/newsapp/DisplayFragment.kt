@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import java.util.concurrent.TimeUnit
 
@@ -52,6 +53,9 @@ class DisplayFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val draftFlag = requireArguments().getBoolean("draftFlag")
         if (draftFlag) {
+            val actionBar = (activity as AppCompatActivity).supportActionBar
+            actionBar?.title = "Draft"
+            requireActivity().actionBar?.title="Draft"
             editText.text.clear()
             bodyTextView = view.findViewById(R.id.completedTextView)
             bodyTextView.visibility = View.GONE
@@ -114,6 +118,8 @@ class DisplayFragment : Fragment() {
                 parentFragmentManager.popBackStack()
             }
         } else {
+            val actionBar = (activity as AppCompatActivity).supportActionBar
+            actionBar?.title = "Complete"
             position = arguments?.getInt("position")!!
             bodyTextView = view.findViewById(R.id.completedTextView)
             bodyTextView.visibility = View.VISIBLE

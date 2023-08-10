@@ -3,6 +3,7 @@ package com.example.newsapp
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
+
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -15,17 +16,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
+        if (supportFragmentManager.backStackEntryCount>0) {
 
-        if ((supportFragmentManager.getBackStackEntryAt(supportFragmentManager.backStackEntryCount - 1).name) == CompleteFragment.fragmentCompleteKey) {
-            supportFragmentManager.popBackStack()
+            if ((supportFragmentManager.getBackStackEntryAt(supportFragmentManager.backStackEntryCount - 1).name) == CompleteFragment.fragmentCompleteKey) {
+                supportFragmentManager.popBackStack()
 
 
-        } else if ((supportFragmentManager.getBackStackEntryAt(supportFragmentManager.backStackEntryCount - 1).name) == DraftFragment.fragmentDraftKey) {
-            supportFragmentManager.popBackStack()
+            } else if ((supportFragmentManager.getBackStackEntryAt(supportFragmentManager.backStackEntryCount - 1).name) == DraftFragment.fragmentDraftKey) {
+                supportFragmentManager.popBackStack()
 
+            }
         } else {
-            super.onBackPressed()
+                super.onBackPressed()
 
-        }
+            }
     }
+
 }
