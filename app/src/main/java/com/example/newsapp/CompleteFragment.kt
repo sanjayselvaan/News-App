@@ -1,6 +1,7 @@
 package com.example.newsapp
 
 import android.os.Bundle
+
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,11 +12,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 
-class CompleteFragment : Fragment(), RecyclerViewItemClick {
+class CompleteFragment : Fragment(), RecyclerViewItemClick{
     private lateinit var draftAndCompleteViewModel: DraftAndCompleteViewModel
     private lateinit var recycler: RecyclerView
     private lateinit var displayFragment: DisplayFragment
-    private lateinit var recyclerViewAdapter: TabRecyclerViewAdapter
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -23,40 +24,32 @@ class CompleteFragment : Fragment(), RecyclerViewItemClick {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_complete, container, false)
         recycler = view.findViewById(R.id.recyclerViewTab2)
-        recycler.layoutManager = LinearLayoutManager(requireContext())
-        draftAndCompleteViewModel = ViewModelProvider(requireActivity()).get(DraftAndCompleteViewModel::class.java)
-        recyclerViewAdapter = TabRecyclerViewAdapter(draftAndCompleteViewModel.completedList, this)
-        recycler.adapter = recyclerViewAdapter
-        displayFragment = DisplayFragment()
+        draftAndCompleteViewModel =
+            ViewModelProvider(requireActivity()).get(DraftAndCompleteViewModel::class.java)
+        recycler.adapter = TabRecyclerViewAdapter(false,requireActivity(),this)
+        recycler.layoutManager = LinearLayoutManager(requireActivity())
         return view
     }
 
-    override fun onResume() {
-        super.onResume()
-        if(draftAndCompleteViewModel.ToNotifyTab2){
-            if (draftAndCompleteViewModel.positionForTab2!=null){
-                recyclerViewAdapter.notifyItemChanged(draftAndCompleteViewModel.positionForTab2!!)
-            }
-            else{
-                recyclerViewAdapter.notifyItemChanged(recycler.size-1)
-            }
-            draftAndCompleteViewModel.ToNotifyTab2=false
-        }
-    }
-    override fun onClickItemListener(position: Int) {
-        displayFragment=DisplayFragment()
+    override fun onClickItemListener(position: Int,itemIndex:Int) {
         val bundle = Bundle()
         bundle.putInt("position", position)
+        bundle.putInt("itemIndex", itemIndex)
         bundle.putBoolean("draftFlag", false)
+        displayFragment=DisplayFragment()
         displayFragment.arguments = bundle
         parentFragmentManager.beginTransaction()
             .replace(R.id.mainContainer, displayFragment, fragmentCompleteKey)
             .addToBackStack("fragment_2").commit()
-
-    }
-    companion object{
-        const val fragmentCompleteKey="fragment_2"
     }
 
+    companion object {
+        const val fragmentCompleteKey = "fragment_2"
+    }
 
+    fun notifyRecyclerAdapter() {
+        if (isAdded) {
+            recycler.adapter?.notifyItemInserted(recycler?.size!!)
+        }
+    }
 }

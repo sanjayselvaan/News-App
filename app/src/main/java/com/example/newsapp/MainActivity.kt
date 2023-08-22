@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
 
+
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -12,11 +13,11 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.beginTransaction().add(R.id.mainContainer, BaseFragment())
                 .commit()
         }
-
+        changeActionBarTitle(0)
     }
 
     override fun onBackPressed() {
-        if (supportFragmentManager.backStackEntryCount>0) {
+        if (supportFragmentManager.backStackEntryCount > 0) {
 
             if ((supportFragmentManager.getBackStackEntryAt(supportFragmentManager.backStackEntryCount - 1).name) == CompleteFragment.fragmentCompleteKey) {
                 supportFragmentManager.popBackStack()
@@ -27,9 +28,24 @@ class MainActivity : AppCompatActivity() {
 
             }
         } else {
-                super.onBackPressed()
-
+            super.onBackPressed()
+        }
+    }
+    fun changeActionBarTitle(stringID:Int){
+        when(stringID){
+            0->{
+                supportActionBar?.title=getString(R.string.app_name)
             }
+            1->{
+                supportActionBar?.title=getString(R.string.draft)
+            }
+            2->{
+                supportActionBar?.title=getString(R.string.completed)
+            }
+            else->{
+                supportActionBar?.title=getString(R.string.app_name)
+            }
+        }
     }
 
 }

@@ -10,30 +10,49 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import java.util.concurrent.TimeUnit
 
-class DisplayFragment : Fragment() {
-    private lateinit var showTimeTextView: TextView
+class DisplayFragment() : Fragment() {
+    private lateinit var timeSpentTextView: TextView
     private lateinit var bodyTextView: TextView
     private lateinit var editText: EditText
     private lateinit var draftAndCompleteViewModel: DraftAndCompleteViewModel
     private lateinit var saveButton: Button
+    private lateinit var finishButton: Button
+    private var draftFlag: Boolean = false
     private var position: Int = 0
+    private var itemIndex: Int = 0
     private var startTimeInResume: Long = 0
     private var endTimeInPause: Long = 0
+    private var draftFragment: DraftFragment?=null
+    private var completeFragment: CompleteFragment?=null
+    private lateinit var textWatcher: TextWatcher
+    private lateinit var textToBeSet:String
+    private var textChanged:Boolean=false
+    private lateinit var activity: MainActivity
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_display, container, false)
         position = arguments?.getInt("position")!!
+        itemIndex = arguments?.getInt("itemIndex")!!
         editText = view.findViewById(R.id.completedEditText)
+        timeSpentTextView = view.findViewById(R.id.timeTakenTextView)
+        saveButton = view.findViewById(R.id.saveButton)
+        finishButton = view.findViewById(R.id.finishButton)
+        bodyTextView = view.findViewById(R.id.completedTextView)
+        draftFlag = requireArguments().getBoolean("draftFlag")
+        draftFragment = parentFragmentManager.findFragmentByTag("f${0}") as DraftFragment
+        completeFragment= parentFragmentManager.findFragmentByTag("f${1}") as CompleteFragment?
         draftAndCompleteViewModel =
             ViewModelProvider(requireActivity())[DraftAndCompleteViewModel::class.java]
+        activity=requireActivity() as MainActivity
         return view
     }
+
 
     override fun onPause() {
         super.onPause()
@@ -47,100 +66,86 @@ class DisplayFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        showTimeTextView = view.findViewById(R.id.timeTakenTextView)
-        saveButton = view.findViewById<Button>(R.id.saveButton)
-        bodyTextView = view.findViewById(R.id.completedTextView)
         super.onViewCreated(view, savedInstanceState)
-        val draftFlag = requireArguments().getBoolean("draftFlag")
         if (draftFlag) {
-            val actionBar = (activity as AppCompatActivity).supportActionBar
-            actionBar?.title = "Draft"
-            requireActivity().actionBar?.title="Draft"
-            editText.text.clear()
-            bodyTextView = view.findViewById(R.id.completedTextView)
-            bodyTextView.visibility = View.GONE
-            editText.visibility = View.VISIBLE
-            editText.setText(draftAndCompleteViewModel.draftList[position].Body)
-            saveButton.visibility = View.VISIBLE
-            val textWatcher = object : TextWatcher {
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
+            activity.changeActionBarTitle(1)
+            setUpForDraftFragment()
 
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
-                }
-
-                override fun afterTextChanged(s: Editable?) {
-                    draftAndCompleteViewModel.draftList[position].Body = s.toString()
-                    draftAndCompleteViewModel.ToNotifyTab1 = true
-                    draftAndCompleteViewModel.positionForTab1 = position
-                }
-            }
-            editText.addTextChangedListener(textWatcher)
-            saveButton.setOnClickListener {
-
-                val newPosition = returnRespectiveItemPositionInCompletedList(position)
-                if (newPosition != null) {
-                    draftAndCompleteViewModel.completedList[newPosition] =
-                        News(
-                            position,
-                            draftAndCompleteViewModel.draftList[position].Heading,
-                            editText.text.toString(),
-                            draftAndCompleteViewModel.draftList[position].timeSpent
-                        )
-                    draftAndCompleteViewModel.ToNotifyTab1 = true
-                    draftAndCompleteViewModel.ToNotifyTab2 = true
-                    draftAndCompleteViewModel.positionForTab1 = position
-                    draftAndCompleteViewModel.positionForTab2 = newPosition
-
-                } else {
-
-                    draftAndCompleteViewModel.completedList.add(
-                        News(
-                            position,
-                            draftAndCompleteViewModel.draftList[position].Heading,
-                            editText.text.toString(),
-                            draftAndCompleteViewModel.draftList[position].timeSpent
-                        )
-                    )
-                    draftAndCompleteViewModel.ToNotifyTab1 = true
-                    draftAndCompleteViewModel.ToNotifyTab2 = true
-                    draftAndCompleteViewModel.positionForTab1 = position
-                    draftAndCompleteViewModel.positionForTab2 = null
-
-                }
-                parentFragmentManager.popBackStack()
-            }
         } else {
-            val actionBar = (activity as AppCompatActivity).supportActionBar
-            actionBar?.title = "Complete"
-            position = arguments?.getInt("position")!!
-            bodyTextView = view.findViewById(R.id.completedTextView)
-            bodyTextView.visibility = View.VISIBLE
-            editText.visibility = View.GONE
-            showTimeTextView = view.findViewById(R.id.timeTakenTextView)
-            showTimeTextView.visibility = View.VISIBLE
-            showTimeTextView.text =
-                convertMillisToHMS(draftAndCompleteViewModel.completedList[position].timeSpent)
-            bodyTextView.text = draftAndCompleteViewModel.completedList[position].Body
+            activity.changeActionBarTitle(2)
+            setUpForCompleteFragment()
         }
-
     }
 
-    private fun returnRespectiveItemPositionInCompletedList(position: Int): Int? {
-        var returnValue: Int? = null
-        for ((count, item) in draftAndCompleteViewModel.completedList.withIndex()) {
-            if (item.index == position) {
-                returnValue = count
+    private fun setUpForDraftFragment() {
+        val newPositionInDraftList =
+            draftAndCompleteViewModel.returnRespectiveItemPositionInDraftList(itemIndex)
+        val newPositionDraftItem =
+            draftAndCompleteViewModel.getDraftListItem(newPositionInDraftList!!)
+        bodyTextView.visibility = View.GONE
+        timeSpentTextView.visibility=View.GONE
+        editText.visibility = View.VISIBLE
+        saveButton.visibility=View.VISIBLE
+        finishButton.visibility=View.VISIBLE
+        editText.setText(newPositionDraftItem.Body)
+        saveButton.visibility = View.VISIBLE
+        textWatcher = object : TextWatcher {
+            override fun beforeTextChanged(
+                s: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                textChanged=true
+                textToBeSet = s.toString()
             }
         }
-        return returnValue
+        editText.addTextChangedListener(textWatcher)
+
+        saveButton.setOnClickListener {
+            if(textChanged){
+            newPositionDraftItem.Body=textToBeSet
+            }
+            draftFragment?.notifyRecyclerAdapter(position, isRemoved = false)
+            parentFragmentManager.popBackStack()
+        }
+
+        finishButton.setOnClickListener {
+            if(textChanged){
+                newPositionDraftItem.Body=textToBeSet
+            }
+            draftAndCompleteViewModel.addItemInCompleteList(newPositionDraftItem)
+            draftAndCompleteViewModel.removeItemFromDraftList(newPositionInDraftList)
+            draftFragment?.notifyRecyclerAdapter(position, isRemoved = true)
+            if (completeFragment != null) {
+                completeFragment?.notifyRecyclerAdapter()
+            }
+            parentFragmentManager.popBackStack()
+        }
+    }
+
+    private fun setUpForCompleteFragment() {
+        val newPositionInCompleteList =
+            draftAndCompleteViewModel.returnRespectiveItemPositionInCompletedList(itemIndex)
+        val newPositionCompleteItem =
+            draftAndCompleteViewModel.getCompleteListItem(newPositionInCompleteList!!)
+        bodyTextView.visibility = View.VISIBLE
+        timeSpentTextView.visibility = View.VISIBLE
+        editText.visibility = View.GONE
+        saveButton.visibility=View.GONE
+        finishButton.visibility=View.GONE
+        timeSpentTextView.text =
+            convertMillisToHMS(newPositionCompleteItem.timeSpent)
+        bodyTextView.text =
+            newPositionCompleteItem.Body
 
     }
 
@@ -153,15 +158,32 @@ class DisplayFragment : Fragment() {
     }
 
     private fun updateTimeTaken() {
-        draftAndCompleteViewModel.draftList[position].timeSpent =
-            draftAndCompleteViewModel.draftList[position].timeSpent + (endTimeInPause - startTimeInResume)
-        val completedListPosition = returnRespectiveItemPositionInCompletedList(position)
-        if (completedListPosition != null && draftAndCompleteViewModel.completedList.size > 0) {
-            draftAndCompleteViewModel.completedList[completedListPosition] =
-                draftAndCompleteViewModel.draftList[position]
+        val newPositionInDraftList =
+            draftAndCompleteViewModel.returnRespectiveItemPositionInDraftList(itemIndex)
+        val newPositionDraftItem =
+            newPositionInDraftList?.let { draftAndCompleteViewModel.getDraftListItem(it) }
+        val newPositionInCompleteList =
+            draftAndCompleteViewModel.returnRespectiveItemPositionInCompletedList(itemIndex)
+        val newPositionCompleteItem =
+            newPositionInCompleteList?.let { draftAndCompleteViewModel.getCompleteListItem(it) }
+        if (draftFlag) {
+            if (newPositionInDraftList == null) {
+                if (newPositionInCompleteList != null) {
+                    newPositionCompleteItem?.timeSpent = newPositionCompleteItem?.timeSpent!! + (endTimeInPause - startTimeInResume)
+                    draftAndCompleteViewModel.replaceItemInCompleteList(newPositionCompleteItem!!,newPositionInCompleteList)
+                }
+            } else {
+                newPositionDraftItem!!.timeSpent = newPositionDraftItem?.timeSpent!! + (endTimeInPause - startTimeInResume)
+                draftAndCompleteViewModel.replaceItemInDraftList(newPositionDraftItem!!,newPositionInDraftList)
+            }
         }
+    }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        activity.changeActionBarTitle(0)
     }
 }
+
 
 
