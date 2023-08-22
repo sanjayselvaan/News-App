@@ -17,10 +17,10 @@ class DraftFragment() : Fragment(), RecyclerViewItemClick {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_draft, container, false)
         recycler = view.findViewById(R.id.recyclerViewTab1)
-        draftAndCompleteViewModel =
+        draftAndCompleteViewModel=
             ViewModelProvider(requireActivity()).get(DraftAndCompleteViewModel::class.java)
         recycler.itemAnimator = null
-        recycler.adapter = TabRecyclerViewAdapter(true, requireActivity(), this)
+        recycler.adapter = TabRecyclerViewAdapter(true,draftAndCompleteViewModel, this)
         recycler.layoutManager = LinearLayoutManager(requireActivity())
         return view
     }

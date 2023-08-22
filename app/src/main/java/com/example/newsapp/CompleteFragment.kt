@@ -26,7 +26,7 @@ class CompleteFragment : Fragment(), RecyclerViewItemClick{
         recycler = view.findViewById(R.id.recyclerViewTab2)
         draftAndCompleteViewModel =
             ViewModelProvider(requireActivity()).get(DraftAndCompleteViewModel::class.java)
-        recycler.adapter = TabRecyclerViewAdapter(false,requireActivity(),this)
+        recycler.adapter = TabRecyclerViewAdapter(false,draftAndCompleteViewModel,this)
         recycler.layoutManager = LinearLayoutManager(requireActivity())
         return view
     }
