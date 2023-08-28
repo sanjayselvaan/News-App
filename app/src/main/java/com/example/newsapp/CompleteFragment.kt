@@ -1,5 +1,6 @@
 package com.example.newsapp
 
+import android.content.res.Configuration
 import android.os.Bundle
 
 import androidx.fragment.app.Fragment
@@ -15,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView
 class CompleteFragment : Fragment(), RecyclerViewItemClick{
     private lateinit var draftAndCompleteViewModel: DraftAndCompleteViewModel
     private lateinit var recycler: RecyclerView
-    private lateinit var displayFragment: DisplayFragment
 
 
     override fun onCreateView(
@@ -26,7 +26,7 @@ class CompleteFragment : Fragment(), RecyclerViewItemClick{
         recycler = view.findViewById(R.id.recyclerViewTab2)
         draftAndCompleteViewModel =
             ViewModelProvider(requireActivity()).get(DraftAndCompleteViewModel::class.java)
-        recycler.adapter = TabRecyclerViewAdapter(false,draftAndCompleteViewModel,this)
+        recycler.adapter = TabRecyclerViewAdapter(draftAndCompleteViewModel.returnCompleteList(),this)
         recycler.layoutManager = LinearLayoutManager(requireActivity())
         return view
     }
@@ -36,11 +36,23 @@ class CompleteFragment : Fragment(), RecyclerViewItemClick{
         bundle.putInt("position", position)
         bundle.putInt("itemIndex", itemIndex)
         bundle.putBoolean("draftFlag", false)
-        displayFragment=DisplayFragment()
+        val displayFragment=DisplayFragment()
         displayFragment.arguments = bundle
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.mainContainer, displayFragment, fragmentCompleteKey)
-            .addToBackStack("fragment_2").commit()
+        val orientation=this.resources.configuration.orientation
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            if(parentFragmentManager.findFragmentByTag(fragmentCompleteKey)!=null){
+                parentFragmentManager.popBackStack()
+            }
+            parentFragmentManager.beginTransaction().replace(R.id.container1, displayFragment, fragmentCompleteKey)
+                .addToBackStack("fragment_2").commit()
+        }
+        else{
+            if(parentFragmentManager.findFragmentByTag(fragmentCompleteKey)!=null){
+                parentFragmentManager.popBackStack()
+            }
+            parentFragmentManager.beginTransaction().replace(R.id.container2, displayFragment, fragmentCompleteKey)
+                .addToBackStack("fragment_2").commit()
+        }
     }
 
     companion object {

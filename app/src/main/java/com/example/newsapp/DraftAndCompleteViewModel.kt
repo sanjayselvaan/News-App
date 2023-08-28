@@ -3,8 +3,8 @@ package com.example.newsapp
 import androidx.lifecycle.ViewModel
 
 class DraftAndCompleteViewModel : ViewModel() {
-    private var draftList = mutableListOf<News>()
-    private var completedList = mutableListOf<News>()
+     private var draftList = mutableListOf<News>()
+     private var completedList = mutableListOf<News>()
     fun populateDataInDraftList() {
         val headingList = mutableListOf(
             "One",
@@ -97,11 +97,11 @@ class DraftAndCompleteViewModel : ViewModel() {
         return returnValue
 
     }
-    fun returnDraftListSize():Int{
-        return draftList.size
+    fun returnDraftList(): MutableList<News> {
+        return draftList
     }
-    fun returnCompleteListSize():Int{
-        return completedList.size
+    fun returnCompleteList(): MutableList<News> {
+        return completedList
     }
     fun replaceItemInDraftList(newItem:News,position: Int){
         draftList[position]=newItem

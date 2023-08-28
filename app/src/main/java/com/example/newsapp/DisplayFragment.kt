@@ -7,19 +7,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
+
 import androidx.lifecycle.ViewModelProvider
+import com.example.newsapp.databinding.FragmentDisplayBinding
 import java.util.concurrent.TimeUnit
 
 class DisplayFragment() : Fragment() {
-    private lateinit var timeSpentTextView: TextView
-    private lateinit var bodyTextView: TextView
-    private lateinit var editText: EditText
+    private lateinit var binding:FragmentDisplayBinding
     private lateinit var draftAndCompleteViewModel: DraftAndCompleteViewModel
-    private lateinit var saveButton: Button
-    private lateinit var finishButton: Button
     private var draftFlag: Boolean = false
     private var position: Int = 0
     private var itemIndex: Int = 0
@@ -36,21 +31,16 @@ class DisplayFragment() : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_display, container, false)
+        binding = FragmentDisplayBinding.inflate(inflater, container, false)
         position = arguments?.getInt("position")!!
         itemIndex = arguments?.getInt("itemIndex")!!
-        editText = view.findViewById(R.id.completedEditText)
-        timeSpentTextView = view.findViewById(R.id.timeTakenTextView)
-        saveButton = view.findViewById(R.id.saveButton)
-        finishButton = view.findViewById(R.id.finishButton)
-        bodyTextView = view.findViewById(R.id.completedTextView)
         draftFlag = requireArguments().getBoolean("draftFlag")
         draftFragment = parentFragmentManager.findFragmentByTag("f${0}") as DraftFragment
         completeFragment= parentFragmentManager.findFragmentByTag("f${1}") as CompleteFragment?
         draftAndCompleteViewModel =
             ViewModelProvider(requireActivity())[DraftAndCompleteViewModel::class.java]
         activity=requireActivity() as MainActivity
-        return view
+        return binding.root
     }
 
 
@@ -82,13 +72,20 @@ class DisplayFragment() : Fragment() {
             draftAndCompleteViewModel.returnRespectiveItemPositionInDraftList(itemIndex)
         val newPositionDraftItem =
             draftAndCompleteViewModel.getDraftListItem(newPositionInDraftList!!)
-        bodyTextView.visibility = View.GONE
-        timeSpentTextView.visibility=View.GONE
-        editText.visibility = View.VISIBLE
-        saveButton.visibility=View.VISIBLE
-        finishButton.visibility=View.VISIBLE
-        editText.setText(newPositionDraftItem.Body)
-        saveButton.visibility = View.VISIBLE
+        binding.completedTextView.visibility = View.GONE
+        binding.timeTakenTextView.visibility=View.GONE
+        binding.completedEditText.visibility = View.VISIBLE
+        binding.saveButton.visibility=View.VISIBLE
+        binding.finishButton.visibility=View.VISIBLE
+        if(arguments?.getString("newTextInEditText")!=null){
+            textChanged=true
+            binding.completedEditText.setText(arguments?.getString("newTextInEditText"))
+            textToBeSet=arguments?.getString("newTextInEditText")!!
+        }
+        else{
+            binding.completedEditText.setText(newPositionDraftItem.Body)
+        }
+        binding.saveButton.visibility = View.VISIBLE
         textWatcher = object : TextWatcher {
             override fun beforeTextChanged(
                 s: CharSequence?,
@@ -106,11 +103,12 @@ class DisplayFragment() : Fragment() {
             override fun afterTextChanged(s: Editable?) {
                 textChanged=true
                 textToBeSet = s.toString()
+                arguments?.putString("newTextInEditText",textToBeSet)
             }
         }
-        editText.addTextChangedListener(textWatcher)
+        binding.completedEditText.addTextChangedListener(textWatcher)
 
-        saveButton.setOnClickListener {
+        binding.saveButton.setOnClickListener {
             if(textChanged){
             newPositionDraftItem.Body=textToBeSet
             }
@@ -118,7 +116,7 @@ class DisplayFragment() : Fragment() {
             parentFragmentManager.popBackStack()
         }
 
-        finishButton.setOnClickListener {
+        binding.finishButton.setOnClickListener {
             if(textChanged){
                 newPositionDraftItem.Body=textToBeSet
             }
@@ -137,14 +135,14 @@ class DisplayFragment() : Fragment() {
             draftAndCompleteViewModel.returnRespectiveItemPositionInCompletedList(itemIndex)
         val newPositionCompleteItem =
             draftAndCompleteViewModel.getCompleteListItem(newPositionInCompleteList!!)
-        bodyTextView.visibility = View.VISIBLE
-        timeSpentTextView.visibility = View.VISIBLE
-        editText.visibility = View.GONE
-        saveButton.visibility=View.GONE
-        finishButton.visibility=View.GONE
-        timeSpentTextView.text =
+        binding.completedTextView.visibility = View.VISIBLE
+        binding.timeTakenTextView.visibility = View.VISIBLE
+        binding.completedEditText.visibility = View.GONE
+        binding.saveButton.visibility=View.GONE
+        binding.finishButton.visibility=View.GONE
+        binding.timeTakenTextView.text =
             convertMillisToHMS(newPositionCompleteItem.timeSpent)
-        bodyTextView.text =
+        binding.completedTextView.text =
             newPositionCompleteItem.Body
 
     }
@@ -183,6 +181,8 @@ class DisplayFragment() : Fragment() {
         super.onDestroy()
         activity.changeActionBarTitle(0)
     }
+
+
 }
 
 

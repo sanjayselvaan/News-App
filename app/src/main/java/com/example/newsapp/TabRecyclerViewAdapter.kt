@@ -11,8 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 
 class TabRecyclerViewAdapter(
-    private val isDraft: Boolean,
-    private val draftAndCompleteViewModel: DraftAndCompleteViewModel,
+    private val recyclerMutableList: MutableList<News>,
     private val itemClick: RecyclerViewItemClick
 ) :
     RecyclerView.Adapter<TabRecyclerViewAdapter.MyViewHolder>() {
@@ -24,24 +23,11 @@ class TabRecyclerViewAdapter(
 
 
     override fun getItemCount(): Int {
-        val size:Int
-        if (isDraft) {
-            size=draftAndCompleteViewModel.returnDraftListSize()
-        }
-        else{
-            size=draftAndCompleteViewModel.returnCompleteListSize()
-        }
-        return size
+        return recyclerMutableList.size
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val currentItem:News
-        if(isDraft){
-            currentItem=draftAndCompleteViewModel.getDraftListItem(position)
-        }
-        else{
-            currentItem=draftAndCompleteViewModel.getCompleteListItem(position)
-        }
+        val currentItem:News = recyclerMutableList[position]
         holder.header.text = currentItem.Heading
         holder.body.text = currentItem.Body
         holder.itemView.setOnClickListener {
@@ -49,10 +35,16 @@ class TabRecyclerViewAdapter(
         }
     }
 
+    override fun onBindViewHolder(holder: MyViewHolder, position: Int, payloads: MutableList<Any>) {
+        super.onBindViewHolder(holder, position, payloads)
+    }
+
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val header: TextView = itemView.findViewById(R.id.newsHeading)
         val body: TextView = itemView.findViewById(R.id.newsBody)
     }
+
+
 
 }

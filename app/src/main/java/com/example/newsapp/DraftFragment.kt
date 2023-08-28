@@ -1,5 +1,6 @@
 package com.example.newsapp
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,16 +12,19 @@ import androidx.recyclerview.widget.RecyclerView
 
 class DraftFragment() : Fragment(), RecyclerViewItemClick {
     private lateinit var recycler: RecyclerView
-    private lateinit var displayFragment: DisplayFragment
     private lateinit var draftAndCompleteViewModel: DraftAndCompleteViewModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = inflater.inflate(R.layout.fragment_draft, container, false)
         recycler = view.findViewById(R.id.recyclerViewTab1)
-        draftAndCompleteViewModel=
+        draftAndCompleteViewModel =
             ViewModelProvider(requireActivity()).get(DraftAndCompleteViewModel::class.java)
         recycler.itemAnimator = null
-        recycler.adapter = TabRecyclerViewAdapter(true,draftAndCompleteViewModel, this)
+        recycler.adapter= TabRecyclerViewAdapter(draftAndCompleteViewModel.returnDraftList(), this)
         recycler.layoutManager = LinearLayoutManager(requireActivity())
         return view
     }
@@ -32,16 +36,32 @@ class DraftFragment() : Fragment(), RecyclerViewItemClick {
         }
     }
 
+
     override fun onClickItemListener(position: Int, itemIndex: Int) {
         val bundle = Bundle()
         bundle.putInt("position", position)
         bundle.putInt("itemIndex", itemIndex)
         bundle.putBoolean("draftFlag", true)
-        displayFragment = DisplayFragment()
+        val displayFragment = DisplayFragment()
         displayFragment.arguments = bundle
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.mainContainer, displayFragment, fragmentDraftKey)
-            .addToBackStack(fragmentDraftKey).commit()
+        val orientation = this.resources.configuration.orientation
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            if(parentFragmentManager.findFragmentByTag(fragmentDraftKey)!=null){
+                parentFragmentManager.popBackStack()
+            }
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.container1, displayFragment, fragmentDraftKey)
+                .addToBackStack(fragmentDraftKey)
+                .commit()
+        } else {
+            if(parentFragmentManager.findFragmentByTag(fragmentDraftKey)!=null){
+                parentFragmentManager.popBackStack()
+            }
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.container2, displayFragment, fragmentDraftKey)
+                .addToBackStack(fragmentDraftKey)
+                .commit()
+        }
     }
 
     companion object {
@@ -57,5 +77,4 @@ class DraftFragment() : Fragment(), RecyclerViewItemClick {
             }
         }
     }
-
 }
